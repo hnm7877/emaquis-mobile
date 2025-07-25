@@ -56,13 +56,13 @@ export default function StockListScreen() {
   useEffect(() => {
     let filtered = allProducts;
     if (search) {
-      filtered = filtered.filter((p) =>
+      filtered = filtered.filter((p: any) =>
         p.name?.toLowerCase().includes(search.toLowerCase())
       );
     }
     if (category) {
       filtered = filtered.filter(
-        (p) =>
+        (p: any) =>
           (p.categorie?.name || p.categorie)?.toLowerCase() ===
           category.toLowerCase()
       );
@@ -79,11 +79,11 @@ export default function StockListScreen() {
         onPress: async () => {
           try {
             await deleteProduct(id);
-            setProducts((prev) =>
-              prev.filter((p) => p._id !== id && p.id !== id)
+            setProducts((prev: any) =>
+              prev.filter((p: any) => p._id !== id && p.id !== id)
             );
-            setAllProducts((prev) =>
-              prev.filter((p) => p._id !== id && p.id !== id)
+            setAllProducts((prev: any) =>
+              prev.filter((p: any) => p._id !== id && p.id !== id)
             );
             Alert.alert("Succès", "Produit supprimé");
           } catch (e) {
@@ -95,13 +95,15 @@ export default function StockListScreen() {
   };
 
   const handleEdit = (item: any) => {
-    navigation.navigate("ProductForm", { product: item });
+    navigation.navigate("ProductForm" as any, { product: item } as any);
   };
 
   // Extraire les catégories uniques pour le filtre
   const categories = Array.from(
     new Set(
-      allProducts.map((p) => p.categorie?.name || p.categorie).filter(Boolean)
+      allProducts
+        .map((p: any) => p.categorie?.name || p.categorie)
+        .filter(Boolean)
     )
   );
 
@@ -133,7 +135,7 @@ export default function StockListScreen() {
         <Picker
           selectedValue={category}
           style={styles.picker}
-          onValueChange={(itemValue) => setCategory(itemValue)}
+          onValueChange={(itemValue: any) => setCategory(itemValue)}
         >
           <Picker.Item label="Toutes catégories" value="" />
           {categories.map((cat) => (

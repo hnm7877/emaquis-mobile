@@ -36,7 +36,7 @@ function MainTabs() {
           if (route.name === "StockList") iconName = "list";
           if (route.name === "ProductForm") iconName = "add-circle";
           if (route.name === "Profile") iconName = "person";
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <Ionicons name={iconName as any} size={size} color={color} />;
         },
         tabBarActiveTintColor: "#FF6B00",
         tabBarInactiveTintColor: "#888",

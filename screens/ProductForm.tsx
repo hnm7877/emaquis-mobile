@@ -59,7 +59,7 @@ export default function ProductFormScreen() {
       setSuccess(true);
       navigation.goBack();
     } catch (e) {
-      setError(e.message || "Erreur lors de l'enregistrement du produit");
+      setError((e as string) || "Erreur lors de l'enregistrement du produit");
     } finally {
       setLoading(false);
     }
