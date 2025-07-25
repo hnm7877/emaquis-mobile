@@ -48,3 +48,13 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Structure du projet (mobile)
+
+- components/ // Boutons, inputs, cards, etc.
+- screens/ // Pages principales (Login, Register, StockList, ProductForm, Profile)
+- services/ // Intégrations API backend (auth.js, product.js)
+- utils/ // Fonctions utilitaires, helpers, thèmes
+- navigation/ // Navigation (Stack, Tabs)
+- assets/ // Images, icônes, logos
+- app/ // Structure de navigation et pages (Expo Router)
