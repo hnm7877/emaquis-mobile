@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "emaquis",
+    "name": "emaquis mobile",
     "slug": "emaquis",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,6 +8,7 @@
     "scheme": "emaquis",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "jsEngine": "jsc",
     "ios": {
       "supportsTablet": true
     },

@@ -9,7 +9,6 @@ import {
   Button,
   Alert,
   TextInput,
-  Picker,
 } from "react-native";
 import {
   fetchProducts,
@@ -17,10 +16,22 @@ import {
   fetchProductsByCategory,
 } from "../services/product";
 import { useNavigation } from "@react-navigation/native";
+import { Picker } from "@react-native-picker/picker";
+
+type Product = {
+  _id?: string;
+  id?: string;
+  name?: string;
+  quantity?: number;
+  stock?: number;
+  categorie?: { name?: string } | string;
+  price?: number;
+  available?: boolean;
+};
 
 export default function StockListScreen() {
-  const [products, setProducts] = useState([]);
-  const [allProducts, setAllProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
@@ -56,15 +67,17 @@ export default function StockListScreen() {
   useEffect(() => {
     let filtered = allProducts;
     if (search) {
-      filtered = filtered.filter((p: any) =>
+      filtered = filtered.filter((p: Product) =>
         p.name?.toLowerCase().includes(search.toLowerCase())
       );
     }
     if (category) {
       filtered = filtered.filter(
-        (p: any) =>
-          (p.categorie?.name || p.categorie)?.toLowerCase() ===
-          category.toLowerCase()
+        (p: Product) =>
+          (typeof p.categorie === "object" && p.categorie !== null
+            ? p.categorie.name
+            : p.categorie
+          )?.toLowerCase() === category.toLowerCase()
       );
     }
     setProducts(filtered);
@@ -79,11 +92,11 @@ export default function StockListScreen() {
         onPress: async () => {
           try {
             await deleteProduct(id);
-            setProducts((prev: any) =>
-              prev.filter((p: any) => p._id !== id && p.id !== id)
+            setProducts((prev: Product[]) =>
+              prev.filter((p: Product) => p._id !== id && p.id !== id)
             );
-            setAllProducts((prev: any) =>
-              prev.filter((p: any) => p._id !== id && p.id !== id)
+            setAllProducts((prev: Product[]) =>
+              prev.filter((p: Product) => p._id !== id && p.id !== id)
             );
             Alert.alert("Succès", "Produit supprimé");
           } catch (e) {
@@ -94,15 +107,19 @@ export default function StockListScreen() {
     ]);
   };
 
-  const handleEdit = (item: any) => {
-    navigation.navigate("ProductForm" as any, { product: item } as any);
+  const handleEdit = (item: Product) => {
+    (navigation as any).navigate("ProductForm", { product: item });
   };
 
   // Extraire les catégories uniques pour le filtre
   const categories = Array.from(
     new Set(
       allProducts
-        .map((p: any) => p.categorie?.name || p.categorie)
+        .map((p: Product) =>
+          typeof p.categorie === "object" && p.categorie !== null
+            ? p.categorie.name
+            : p.categorie
+        )
         .filter(Boolean)
     )
   );
@@ -133,13 +150,17 @@ export default function StockListScreen() {
           onChangeText={setSearch}
         />
         <Picker
-          selectedValue={category}
+          selectedValue={category || ""}
           style={styles.picker}
           onValueChange={(itemValue: any) => setCategory(itemValue)}
         >
           <Picker.Item label="Toutes catégories" value="" />
           {categories.map((cat) => (
-            <Picker.Item key={cat} label={cat} value={cat} />
+            <Picker.Item
+              key={String(cat ?? "")}
+              label={String(cat ?? "")}
+              value={String(cat ?? "")}
+            />
           ))}
         </Picker>
       </View>
@@ -155,7 +176,10 @@ export default function StockListScreen() {
             <Text style={styles.name}>{item.name}</Text>
             <Text>Quantité : {item.quantity ?? item.stock ?? "-"}</Text>
             <Text>
-              Catégorie : {item.categorie?.name || item.categorie || "-"}
+              Catégorie :{" "}
+              {typeof item.categorie === "object" && item.categorie !== null
+                ? item.categorie.name
+                : item.categorie || "-"}
             </Text>
             <Text>Prix : {item.price ? `${item.price} FCFA` : "-"}</Text>
             <Text>Disponible : {item.available ? "Oui" : "Non"}</Text>
@@ -168,7 +192,7 @@ export default function StockListScreen() {
               <Button
                 title="Supprimer"
                 color="#FF3B30"
-                onPress={() => handleDelete(item._id || item.id)}
+                onPress={() => handleDelete(item._id || item.id || "")}
               />
             </View>
           </View>
